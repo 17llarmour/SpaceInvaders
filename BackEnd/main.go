@@ -102,6 +102,9 @@ func shiftCheck() {
 }
 
 func placeUser(box int) {
+	for i := 0; i < 29; i++ {
+		grid[14][i] = " "
+	}
 	grid[14][box] = "0"
 }
 
