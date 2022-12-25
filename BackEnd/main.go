@@ -42,6 +42,13 @@ func newLevel() { // For the future if in even array space one sprite, odd the o
 			grid[i][x] = strconv.Itoa(i) // string(i) makes fun symbols for some reason
 		}
 	}
+	addShelter()
+}
+
+func addShelter() { // Come back to me
+	for offset := 4; offset < 30; offset += 7 {
+		return
+	}
 }
 
 func shiftDown() {
@@ -127,7 +134,7 @@ func getState(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func updatePos(w http.ResponseWriter, r *http.Request) {
+func updatePos(w http.ResponseWriter, r *http.Request) { // For pygame, use mouse.get_pos() DIV 30 rounded to get pos
 	targetPos := r.URL.Query()["pos"]
 	fmt.Println(targetPos)
 	box, err := strconv.Atoi(targetPos[0])
