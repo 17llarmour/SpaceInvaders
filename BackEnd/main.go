@@ -118,7 +118,10 @@ func runServer() {
 
 func getState(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(grid)
+	err := json.NewEncoder(w).Encode(grid)
+	if err != nil {
+		return
+	}
 }
 
 func updatePos(w http.ResponseWriter, r *http.Request) {
