@@ -115,9 +115,38 @@ func placeUser(box int) {
 	grid[14][box] = "0"
 }
 
+func clearTop() {
+	for i := 0; i > 29; i++ {
+		grid[0][i] = " "
+	}
+}
+
+func playerBullet() {
+	var pos int
+	for i := 0; i < 29; i++ {
+		if grid[14][i] == "0" {
+			pos = i
+			break
+		}
+	}
+	grid[13][pos] = "x"
+	for x := 13; x > 0; x-- {
+		if grid[x-1][pos] != " " {
+			grid[x][pos] = " "
+			grid[x-1][pos] = " "
+			break
+		}
+		grid[x-1][pos] = grid[x][pos]
+		grid[x][pos] = " "
+		//time.Sleep(2 * time.Second)
+	}
+	clearTop()
+}
+
 func runServer() {
 	http.HandleFunc("/state", getState)
 	http.HandleFunc("/playerPos", updatePos)
+	http.HandleFunc("/shoot", playerShot)
 
 	err := http.ListenAndServe(":80", nil)
 	if err != nil {
@@ -144,4 +173,8 @@ func updatePos(w http.ResponseWriter, r *http.Request) { // For pygame, use mous
 	}
 	placeUser(box)
 
+}
+
+func playerShot(w http.ResponseWriter, r *http.Request) {
+	playerBullet()
 }
