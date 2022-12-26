@@ -29,7 +29,7 @@ func main() {
 		printGrid(shootyGrid)
 		fmt.Println("------------SPLIT---------------")
 		winCheck()
-		//time.Sleep(2 * time.Second)
+		time.Sleep(2 * time.Second)
 	}
 }
 
