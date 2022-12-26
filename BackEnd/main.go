@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,18 +12,23 @@ import (
 var grid [][]string
 var shootyGrid [][]string
 var direction string
+var lives = 3
+var score int
 
 func main() {
 	go runServer()
 	grid = buildGrid()
 	shootyGrid = buildGrid()
 	newLevel()
-	for {
+
+	for lives > 0 {
 		shiftCheck()
 		printGrid(grid)
 		fmt.Println("------------SPLIT---------------")
 		printGrid(shootyGrid)
-		time.Sleep(2 * time.Second)
+		fmt.Println("------------SPLIT---------------")
+		endLevel()
+		//time.Sleep(2 * time.Second)
 	}
 }
 
@@ -59,6 +65,28 @@ func newLevel() { // For the future if in even array space one sprite, odd the o
 		}
 	}
 	addShelter()
+}
+
+func endLevel() {
+	for i := 10; i > 0; i-- {
+		for x := 0; x < 29; x++ {
+			if grid[i][x] != " " {
+				return
+			}
+		}
+	}
+	winCheck()
+	newLevel()
+
+}
+
+func winCheck() {
+	for x := 0; x < 29; x++ {
+		if grid[11][x] != " " {
+			lives -= 1
+			fmt.Println("Life Lost")
+		}
+	}
 }
 
 func addShelter() { // Come back to me
@@ -131,12 +159,6 @@ func placeUser(box int) {
 	grid[14][box] = "0"
 }
 
-func clearTop() {
-	for i := 0; i > 29; i++ {
-		grid[0][i] = " "
-	}
-}
-
 func playerBullet() { // Change how this is done to have a separate grid for bullets
 	var pos int
 	for i := 0; i < 29; i++ {
@@ -145,24 +167,46 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 			break
 		}
 	}
-	grid[13][pos] = "y"
+	shootyGrid[13][pos] = "y"
 	for y := 13; y > 0; y-- {
 		if grid[y-1][pos] != " " {
-			grid[y][pos] = " "
+			shootyGrid[y][pos] = " "
+			pointsUpdate(y, pos)
 			grid[y-1][pos] = " "
 			break
 		}
-		grid[y-1][pos] = grid[y][pos]
-		grid[y][pos] = " "
-		//time.Sleep(2 * time.Second)
+		shootyGrid[y-1][pos] = shootyGrid[y][pos]
+		shootyGrid[y][pos] = " "
+
+		time.Sleep(2 * time.Second) // This needs to sync with the normal game clock potentially not entirely sure...
 	}
 	clearTop()
+}
+
+func pointsUpdate(y int, x int) {
+	if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
+		score += 10
+	} else if grid[y-1][x] == "3" || grid[y-1][x] == "4" {
+		score += 20
+	} else if grid[y-1][x] == "5" {
+		score += 30
+	} else if grid[y-1][x] == "6" {
+		multi := rand.Intn(3) + 1
+		score += 100 * multi
+	}
+}
+
+func clearTop() {
+	for i := 0; i < 29; i++ { // Syntax, inequality sign was backwards -_-
+		shootyGrid[0][i] = " "
+	}
 }
 
 func runServer() {
 	http.HandleFunc("/state", getState)
 	http.HandleFunc("/playerPos", updatePos)
 	http.HandleFunc("/shoot", playerShot)
+	http.HandleFunc("/reset", resetCheck)
 
 	err := http.ListenAndServe(":80", nil)
 	if err != nil {
@@ -175,6 +219,11 @@ func getState(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(grid)
 	if err != nil {
+		return
+	}
+	err = json.NewEncoder(w).Encode(shootyGrid)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
 }
@@ -192,5 +241,23 @@ func updatePos(w http.ResponseWriter, r *http.Request) { // For pygame, use mous
 }
 
 func playerShot(w http.ResponseWriter, r *http.Request) {
-	playerBullet()
+	beenShot := r.URL.Query()["shoot"]
+	fmt.Println(beenShot)
+	shot := beenShot[0]
+	if shot == "yes" {
+		playerBullet()
+	}
+}
+
+func resetCheck(w http.ResponseWriter, r *http.Request) {
+	reset := r.URL.Query()["reset"]
+
+	fmt.Println(reset)
+	if reset[0] == "yes" {
+		lives = 3
+		score = 0
+		newLevel()
+		//player = ""
+
+	}
 }
