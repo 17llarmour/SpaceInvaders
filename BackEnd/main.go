@@ -21,8 +21,9 @@ func main() {
 	shootyGrid = buildGrid()
 	newLevel()
 
-	for lives > 0 {
+	for lives > 0 { // This is too slow with the sleep...
 		shiftCheck()
+		possibleInvaderBullet()
 		printGrid(grid)
 		fmt.Println("------------SPLIT---------------")
 		printGrid(shootyGrid)
@@ -66,20 +67,6 @@ func newLevel() { // For the future if in even array space one sprite, odd the o
 	}
 	addShelter()
 }
-
-//func endLevel() {
-//	//for i := 10; i > 0; i-- {
-//	//	for x := 0; x < 30; x++ {
-//	//		if grid[i][x] != " " {
-//	//			return
-//	//		}
-//	//	}
-//	//}
-//
-//	if winCheck() {
-//		newLevel()
-//	}
-//}
 
 func winCheck() {
 	for x := 0; x < 30; x++ {
@@ -196,12 +183,32 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 			grid[y-1][pos] = " "
 			break
 		}
+		if shootyGrid[y-1][pos] != " " {
+			if shootyGrid[y-1][pos] == "4" {
+				shootyGrid[y-1][pos] = "3"
+			} else if shootyGrid[y-1][pos] == "3" {
+				shootyGrid[y-1][pos] = "2"
+			} else if shootyGrid[y-1][pos] == "2" {
+				shootyGrid[y-1][pos] = "1"
+			} else if shootyGrid[y-1][pos] == "1" {
+				shootyGrid[y-1][pos] = " "
+			}
+			shootyGrid[y][pos] = " "
+			break
+		}
 		shootyGrid[y-1][pos] = shootyGrid[y][pos]
 		shootyGrid[y][pos] = " "
 
 		time.Sleep(2 * time.Second) // This needs to sync with the normal game clock potentially not entirely sure...
 	}
 	clearTop()
+}
+
+func possibleInvaderBullet() {
+	chance := rand.Intn(4)
+	if chance == 1 {
+		invaderBullet()
+	}
 }
 
 func invaderBullet() {
@@ -214,10 +221,33 @@ func invaderBullet() {
 	} else if grid[shootRow][shootCol] == "5" {
 		shootyGrid[shootRow][shootCol] = "p3"
 	}
+	invaderBulletMovement(shootRow, shootCol)
 }
 
-func bulletUpdates() {
-
+func invaderBulletMovement(row, col int) {
+	for ; row < 14; row++ {
+		if shootyGrid[row+1][col] != " " {
+			if shootyGrid[row+1][col] == "4" {
+				shootyGrid[row+1][col] = "3"
+			} else if shootyGrid[row+1][col] == "3" {
+				shootyGrid[row+1][col] = "2"
+			} else if shootyGrid[row+1][col] == "2" {
+				shootyGrid[row+1][col] = "1"
+			} else if shootyGrid[row+1][col] == "1" {
+				shootyGrid[row+1][col] = " "
+			}
+			if grid[row+1][col] == "0" {
+				lives -= 1
+				fmt.Println(lives)
+				time.Sleep(3 * time.Second)
+			}
+			shootyGrid[row][col] = " "
+			break
+		}
+		shootyGrid[row+1][col] = shootyGrid[row+1][col]
+		shootyGrid[row+1][col] = " "
+		time.Sleep(1 * time.Second)
+	}
 }
 
 func pointsUpdate(y int, x int) {
@@ -244,6 +274,7 @@ func runServer() {
 	http.HandleFunc("/shootyState", getShootyState)
 	http.HandleFunc("/playerPos", updatePos)
 	http.HandleFunc("/shoot", playerShot)
+	http.HandleFunc("/info", getInfo)
 	http.HandleFunc("/reset", resetCheck)
 
 	err := http.ListenAndServe(":80", nil)
@@ -289,6 +320,18 @@ func playerShot(w http.ResponseWriter, r *http.Request) {
 	shot := beenShot[0]
 	if shot == "yes" {
 		playerBullet()
+	}
+}
+
+func getInfo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	localLives := strconv.Itoa(lives)
+	localScore := strconv.Itoa(score)
+	write := [2]string{localLives, localScore}
+	err := json.NewEncoder(w).Encode(write)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 }
 
