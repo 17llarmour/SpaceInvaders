@@ -83,7 +83,7 @@ func newLevel() { // For the future if in even array space one sprite, odd the o
 
 func winCheck() {
 	for x := 0; x < 30; x++ {
-		if grid[11][x] != " " {
+		if grid[10][x] != " " {
 			lives -= 1
 			fmt.Println("Life Lost")
 			placeUser(0)
@@ -95,8 +95,8 @@ func winCheck() {
 }
 
 func clearGrid() {
-	for i := 11; i > 0; i-- {
-		for x := 29; x > 0; x-- {
+	for i := 10; i > 0; i-- {
+		for x := 29; x > -1; x-- {
 			grid[i][x] = " "
 			shootyGrid[i][x] = " "
 		}
@@ -104,13 +104,20 @@ func clearGrid() {
 }
 
 func addShelter() { // Come back to me
-	for offset := 4; offset < 30; offset += 7 {
-		return
+	for y := 10; y < 13; y++ {
+		for offset := 2; offset < 30; offset += 7 {
+			shootyGrid[y][offset] = "4"
+			shootyGrid[y][offset+3] = "4"
+			if y != 12 {
+				shootyGrid[y][offset+1] = "4"
+				shootyGrid[y][offset+2] = "4"
+			}
+		}
 	}
 }
 
 func shiftDown() {
-	for i := 10; i > 0; i-- {
+	for i := 9; i > 0; i-- {
 		for x := 0; x < 30; x++ {
 			grid[i+1][x] = grid[i][x]
 			grid[i][x] = " "
@@ -119,7 +126,7 @@ func shiftDown() {
 }
 
 func shiftRight() {
-	for i := 10; i > 0; i-- {
+	for i := 9; i > 0; i-- {
 		for x := 29; x > 0; x-- {
 			grid[i][x] = grid[i][x-1]
 			grid[i][x-1] = " "
@@ -128,7 +135,7 @@ func shiftRight() {
 }
 
 func shiftLeft() {
-	for i := 10; i > 0; i-- {
+	for i := 9; i > 0; i-- {
 		for x := 0; x < 29; x++ {
 			grid[i][x] = grid[i][x+1]
 			grid[i][x+1] = " "
@@ -137,7 +144,7 @@ func shiftLeft() {
 }
 
 func shiftCheckDown() bool {
-	for i := 10; i > 0; i-- {
+	for i := 9; i > 0; i-- {
 		if grid[i][0] != " " {
 			shiftDown()
 			shiftRight()
