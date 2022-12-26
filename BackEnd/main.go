@@ -9,30 +9,46 @@ import (
 )
 
 var grid [][]string
+var shootyGrid [][]string
 var direction string
 
 func main() {
 	go runServer()
-	buildGrid()
+	grid = buildGrid()
+	shootyGrid = buildGrid()
 	newLevel()
 	for {
 		shiftCheck()
-		fmt.Println(grid)
+		printGrid(grid)
+		fmt.Println("------------SPLIT---------------")
+		printGrid(shootyGrid)
 		time.Sleep(2 * time.Second)
 	}
 }
 
-func buildGrid() { // This is going cause issues when resetting...no way to reassign the global grid to be empty...although maybe it's not needed
+func buildGrid() [][]string { // This is going cause issues when resetting...no way to reassign the global grid to be empty...although maybe it's not needed
 
 	//for i := 0; i < 30; i++ { // Pointed to same memory address, so when manipulating, updated ever array rather than just the intended one
 	//	x = append(x, " ")
 	//}
+	var tempGrid [][]string
 	for z := 0; z < 15; z++ {
 		var x []string
 		for i := 0; i < 30; i++ { // Space between each item in the array - means the bullet can not collide with anything
 			x = append(x, " ")
 		}
-		grid = append(grid, x)
+		tempGrid = append(tempGrid, x)
+	}
+	return tempGrid
+}
+
+func printGrid(grid [][]string) {
+	for i := 0; i < 15; i++ {
+		printLn := "["
+		for x := 0; x < 30; x++ {
+			printLn += grid[i][x]
+		}
+		fmt.Println(printLn + "]")
 	}
 }
 
@@ -121,7 +137,7 @@ func clearTop() {
 	}
 }
 
-func playerBullet() {
+func playerBullet() { // Change how this is done to have a separate grid for bullets
 	var pos int
 	for i := 0; i < 29; i++ {
 		if grid[14][i] == "0" {
@@ -129,15 +145,15 @@ func playerBullet() {
 			break
 		}
 	}
-	grid[13][pos] = "x"
-	for x := 13; x > 0; x-- {
-		if grid[x-1][pos] != " " {
-			grid[x][pos] = " "
-			grid[x-1][pos] = " "
+	grid[13][pos] = "y"
+	for y := 13; y > 0; y-- {
+		if grid[y-1][pos] != " " {
+			grid[y][pos] = " "
+			grid[y-1][pos] = " "
 			break
 		}
-		grid[x-1][pos] = grid[x][pos]
-		grid[x][pos] = " "
+		grid[y-1][pos] = grid[y][pos]
+		grid[y][pos] = " "
 		//time.Sleep(2 * time.Second)
 	}
 	clearTop()
