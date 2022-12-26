@@ -27,7 +27,7 @@ func main() {
 		fmt.Println("------------SPLIT---------------")
 		printGrid(shootyGrid)
 		fmt.Println("------------SPLIT---------------")
-		endLevel()
+		winCheck()
 		//time.Sleep(2 * time.Second)
 	}
 }
@@ -67,24 +67,38 @@ func newLevel() { // For the future if in even array space one sprite, odd the o
 	addShelter()
 }
 
-func endLevel() {
-	for i := 10; i > 0; i-- {
-		for x := 0; x < 29; x++ {
-			if grid[i][x] != " " {
-				return
-			}
-		}
-	}
-	winCheck()
-	newLevel()
-
-}
+//func endLevel() {
+//	//for i := 10; i > 0; i-- {
+//	//	for x := 0; x < 30; x++ {
+//	//		if grid[i][x] != " " {
+//	//			return
+//	//		}
+//	//	}
+//	//}
+//
+//	if winCheck() {
+//		newLevel()
+//	}
+//}
 
 func winCheck() {
-	for x := 0; x < 29; x++ {
+	for x := 0; x < 30; x++ {
 		if grid[11][x] != " " {
 			lives -= 1
 			fmt.Println("Life Lost")
+			placeUser(0)
+			clearGrid()
+			newLevel()
+			return
+		}
+	}
+}
+
+func clearGrid() {
+	for i := 11; i > 0; i-- {
+		for x := 29; x > 0; x-- {
+			grid[i][x] = " "
+			shootyGrid[i][x] = " "
 		}
 	}
 }
@@ -183,13 +197,29 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 	clearTop()
 }
 
+func invaderBullet() {
+	shootRow := rand.Intn(9) + 1
+	shootCol := rand.Intn(29)
+	if grid[shootRow][shootCol] == "1" || grid[shootRow][shootCol] == "2" {
+		shootyGrid[shootRow][shootCol] = "p1"
+	} else if grid[shootRow][shootCol] == "3" || grid[shootRow][shootCol] == "4" {
+		shootyGrid[shootRow][shootCol] = "p2"
+	} else if grid[shootRow][shootCol] == "5" {
+		shootyGrid[shootRow][shootCol] = "p3"
+	}
+}
+
+func bulletUpdates() {
+
+}
+
 func pointsUpdate(y int, x int) {
 	if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
-		score += 10
+		score += 30
 	} else if grid[y-1][x] == "3" || grid[y-1][x] == "4" {
 		score += 20
 	} else if grid[y-1][x] == "5" {
-		score += 30
+		score += 10
 	} else if grid[y-1][x] == "6" {
 		multi := rand.Intn(3) + 1
 		score += 100 * multi
@@ -204,6 +234,7 @@ func clearTop() {
 
 func runServer() {
 	http.HandleFunc("/state", getState)
+	http.HandleFunc("/shootyState", getShootyState)
 	http.HandleFunc("/playerPos", updatePos)
 	http.HandleFunc("/shoot", playerShot)
 	http.HandleFunc("/reset", resetCheck)
@@ -219,9 +250,14 @@ func getState(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err := json.NewEncoder(w).Encode(grid)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	err = json.NewEncoder(w).Encode(shootyGrid)
+}
+
+func getShootyState(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	err := json.NewEncoder(w).Encode(shootyGrid)
 	if err != nil {
 		fmt.Println(err)
 		return
