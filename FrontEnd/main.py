@@ -15,11 +15,43 @@ def newGame():
     r = requests.post(url)
 
 
-def getStates(pos):
+def shootyShoot():
     shoot = requests.post(url="http://localhost/state?place=yes")
-    grid = requests.get("http://localhost/state")
-    shooty = requests.get("http://localhost/shootyState")
+
+
+def sendPlayer(pos):
+    pos = float(pos/30)
+    pos = int(round(pos,0))
+    player = requests.post(url="http://localhost/player?pos=" + str(pos))
+
+
+
+def getStates():
+    gridTemp = requests.get("http://localhost/state")
+    shootyTemp = requests.get("http://localhost/shootyState")
+    grid = json.loads(gridTemp.text)
+    shooty = json.loads(shootyTemp.text)
+    printGrid(grid)
+    printGrid(shooty)
+
+
+def printGrid(board):
+    for i in range(15):
+        print(board[i])
+    print("----------SPLIT-----------")
 
 
 if __name__ == '__main__':
-    pass
+    print("running client")
+    init()
+    width = 900
+    height = 450
+    screen = display.set_mode((width,height))
+    endProgram = False
+    newGame()
+    while not endProgram:
+        for e in event.get():
+            if e.type == QUIT:
+                endProgram = True
+
+        mouseX, mouseY = mouse.get_pos()

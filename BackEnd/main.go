@@ -20,16 +20,22 @@ func main() {
 	grid = buildGrid()
 	shootyGrid = buildGrid()
 	newLevel()
-
-	for lives > 0 { // This is too slow with the sleep...
-		shiftCheck()
-		possibleInvaderBullet()
-		printGrid(grid)
-		fmt.Println("------------SPLIT---------------")
-		printGrid(shootyGrid)
-		fmt.Println("------------SPLIT---------------")
-		winCheck()
-		time.Sleep(2 * time.Second)
+	for {
+		for lives > 0 { // This is too slow with the sleep...
+			var row int
+			var col int
+			shiftCheck()
+			if possibleInvaderBullet() {
+				row, col = invaderBullet()
+			}
+			invaderBulletMovement(row, col)
+			printGrid(grid)
+			fmt.Println("------------SPLIT---------------")
+			printGrid(shootyGrid)
+			fmt.Println("------------SPLIT---------------")
+			winCheck()
+			time.Sleep(2 * time.Second)
+		}
 	}
 }
 
@@ -130,33 +136,24 @@ func shiftLeft() {
 	}
 }
 
-func shiftCheckDown() bool {
+func shiftCheckDown() {
 	for i := 9; i > 0; i-- {
 		if grid[i][0] != " " {
 			shiftDown()
-			shiftRight()
 			direction = "right"
-			return true
 		} else if grid[i][29] != " " {
 			shiftDown()
-			shiftLeft()
 			direction = "left"
-			return true
 		}
 	}
-	return false
 }
 
 func shiftCheck() {
-	if shiftCheckDown() {
-		return
-	}
+	shiftCheckDown()
 	if direction == "right" {
 		shiftRight()
-		direction = "right"
 	} else {
 		shiftLeft()
-		direction = "left"
 	}
 }
 
@@ -204,24 +201,25 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 	clearTop()
 }
 
-func possibleInvaderBullet() {
+func possibleInvaderBullet() bool {
 	chance := rand.Intn(4)
 	if chance == 1 {
-		invaderBullet()
+		return true
 	}
+	return false
 }
 
-func invaderBullet() {
+func invaderBullet() (int, int) {
 	shootRow := rand.Intn(9) + 1
 	shootCol := rand.Intn(29)
-	if grid[shootRow][shootCol] == "1" || grid[shootRow][shootCol] == "2" {
+	if grid[shootRow][shootCol] == "5" || grid[shootRow][shootCol] == "4" {
 		shootyGrid[shootRow][shootCol] = "p1"
-	} else if grid[shootRow][shootCol] == "3" || grid[shootRow][shootCol] == "4" {
+	} else if grid[shootRow][shootCol] == "3" || grid[shootRow][shootCol] == "2" {
 		shootyGrid[shootRow][shootCol] = "p2"
-	} else if grid[shootRow][shootCol] == "5" {
+	} else if grid[shootRow][shootCol] == "1" {
 		shootyGrid[shootRow][shootCol] = "p3"
 	}
-	invaderBulletMovement(shootRow, shootCol)
+	return shootRow, shootCol
 }
 
 func invaderBulletMovement(row, col int) {
@@ -244,9 +242,9 @@ func invaderBulletMovement(row, col int) {
 			shootyGrid[row][col] = " "
 			break
 		}
-		shootyGrid[row+1][col] = shootyGrid[row+1][col]
-		shootyGrid[row+1][col] = " "
-		time.Sleep(1 * time.Second)
+		shootyGrid[row+1][col] = shootyGrid[row][col]
+		shootyGrid[row][col] = " "
+		//time.Sleep(1 * time.Second)
 	}
 }
 
