@@ -79,6 +79,8 @@ def drawGrid(grid):
                     invaderImage = image.load("invader2Odd.png").convert()
                 elif grid[y][x] == "1":
                     invaderImage = image.load("invader1Odd.png").convert()
+                elif grid[y][x] == "0":
+                    invaderImage = image.load("cannonDraw.png").convert()
             else:
                 if grid[y][x] == "5" or grid[y][x] == "4":
                     invaderImage = image.load("invader3Even.png").convert()
@@ -86,8 +88,10 @@ def drawGrid(grid):
                     invaderImage = image.load("invader2Even.png").convert()
                 elif grid[y][x] == "1":
                     invaderImage = image.load("invader1Even.png").convert()
+                elif grid[y][x] == "0":
+                    invaderImage = image.load("cannonDraw.png").convert()
             if invaderImage != None:
-                screen.blit(invaderImage, (x*60, y*60 + 50))
+                screen.blit(invaderImage, (x*60, y*60 + 60))
 
 
 def drawShooty(grid):
@@ -95,21 +99,21 @@ def drawShooty(grid):
         for x in range(30):
             shootyImage = None
             if grid[y][x] == "4":
-                draw.rect(screen, (0,255,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (0,255,0),(x*60,y*60+60,60,60))
             if grid[y][x] == "3":
-                draw.rect(screen, (255,255,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,255,0),(x*60,y*60+60,60,60))
             if grid[y][x] == "2":
-                draw.rect(screen, (255,165,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,165,0),(x*60,y*60+60,60,60))
             if grid[y][x] == "1":
-                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
             if grid[y][x] == "p1":
-                draw.rect(screen, (255,255,255),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,255,255),(x*60,y*60+60,60,60))
             if grid[y][x] == "p2":
-                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
             if grid[y][x] == "p3":
-                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
             if grid[y][x] == "y":
-                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
 
 
 
@@ -126,7 +130,7 @@ if __name__ == '__main__':
     sendPlayer(0)
     init()
     width = 1800
-    height = 950
+    height = 960
     screen = display.set_mode((width,height))
     endProgram = False
     while not endProgram:
