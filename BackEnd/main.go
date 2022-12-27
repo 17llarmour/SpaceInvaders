@@ -249,13 +249,17 @@ func bulletUp() {
 func pointsUpdate(y int, x int) {
 	if grid[y-1][x] == "5" {
 		score += 40
+		grid[y-1][x] = " "
 	} else if grid[y-1][x] == "4" || grid[y-1][x] == "3" {
 		score += 20
+		grid[y-1][x] = " "
 	} else if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
 		score += 10
+		grid[y-1][x] = " "
 	} else if grid[y-1][x] == "6" {
 		multi := rand.Intn(3) + 1
 		score += 100 * multi
+		grid[y-1][x] = " "
 	}
 }
 
