@@ -21,12 +21,11 @@ func main() {
 	shootyGrid = buildGrid()
 	newLevel()
 	for {
-		for lives > 0 { // This is too slow with the sleep...
+		for lives > 0 {
 			shiftCheck()
 			if possibleInvaderBullet() {
 				invaderBullet()
 			}
-			//invaderBulletMovement(row, col)
 			bulletDown()
 			bulletUp()
 			printGrid(grid)
@@ -39,11 +38,7 @@ func main() {
 	}
 }
 
-func buildGrid() [][]string { // This is going cause issues when resetting...no way to reassign the global grid to be empty...although maybe it's not needed
-
-	//for i := 0; i < 30; i++ { // Pointed to same memory address, so when manipulating, updated ever array rather than just the intended one
-	//	x = append(x, " ")
-	//}
+func buildGrid() [][]string {
 	var tempGrid [][]string
 	for z := 0; z < 15; z++ {
 		var x []string
@@ -66,6 +61,7 @@ func printGrid(grid [][]string) {
 }
 
 func newLevel() { // For the future if in even array space one sprite, odd the other
+	clearGrid()
 	for i := 1; i < 6; i++ {
 		for x := 4; x < 26; x += 2 {
 			grid[i][x] = strconv.Itoa(i) // string(i) makes fun symbols for some reason
@@ -175,33 +171,6 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 			break
 		}
 	}
-
-	//for y := 13; y > 0; y-- {
-	//	if grid[y-1][pos] != " " {
-	//		shootyGrid[y][pos] = " "
-	//		pointsUpdate(y, pos)
-	//		grid[y-1][pos] = " "
-	//		break
-	//	}
-	//	if shootyGrid[y-1][pos] != " " {
-	//		if shootyGrid[y-1][pos] == "4" {
-	//			shootyGrid[y-1][pos] = "3"
-	//		} else if shootyGrid[y-1][pos] == "3" {
-	//			shootyGrid[y-1][pos] = "2"
-	//		} else if shootyGrid[y-1][pos] == "2" {
-	//			shootyGrid[y-1][pos] = "1"
-	//		} else if shootyGrid[y-1][pos] == "1" {
-	//			shootyGrid[y-1][pos] = " "
-	//		}
-	//		shootyGrid[y][pos] = " "
-	//		break
-	//	}
-	//	shootyGrid[y-1][pos] = shootyGrid[y][pos]
-	//	shootyGrid[y][pos] = " "
-	//
-	//	time.Sleep(2 * time.Second) // This needs to sync with the normal game clock potentially not entirely sure...
-	//}
-	//clearTop()
 }
 
 func possibleInvaderBullet() bool {
@@ -273,32 +242,6 @@ func bulletUp() {
 	}
 	clearTop()
 }
-
-//func invaderBulletMovement(row, col int) {
-//	for ; row < 14; row++ {
-//		if shootyGrid[row+1][col] != " " {
-//			if shootyGrid[row+1][col] == "4" {
-//				shootyGrid[row+1][col] = "3"
-//			} else if shootyGrid[row+1][col] == "3" {
-//				shootyGrid[row+1][col] = "2"
-//			} else if shootyGrid[row+1][col] == "2" {
-//				shootyGrid[row+1][col] = "1"
-//			} else if shootyGrid[row+1][col] == "1" {
-//				shootyGrid[row+1][col] = " "
-//			}
-//			if grid[row+1][col] == "0" {
-//				lives -= 1
-//				fmt.Println(lives)
-//				time.Sleep(3 * time.Second)
-//			}
-//			shootyGrid[row][col] = " "
-//			break
-//		}
-//		shootyGrid[row+1][col] = shootyGrid[row][col]
-//		shootyGrid[row][col] = " "
-//		//time.Sleep(1 * time.Second)
-//	}
-//}
 
 func pointsUpdate(y int, x int) {
 	if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
