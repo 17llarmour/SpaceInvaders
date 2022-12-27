@@ -82,6 +82,8 @@ func winCheck() {
 			placeUser(0)
 			clearGrid()
 			newLevel()
+			clearBottom()
+			clearTop()
 			return
 		}
 	}
@@ -358,7 +360,7 @@ func getShootyState(w http.ResponseWriter, r *http.Request) {
 
 func updatePos(w http.ResponseWriter, r *http.Request) { // For pygame, use mouse.get_pos() DIV 30 rounded to get pos
 	targetPos := r.URL.Query()["pos"]
-	fmt.Println(targetPos)
+	//fmt.Println(targetPos)
 	box, err := strconv.Atoi(targetPos[0])
 	if err != nil {
 		fmt.Println(err)
