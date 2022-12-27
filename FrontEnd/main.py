@@ -23,18 +23,17 @@ def shootyShoot():
 
 def sendPlayer(pos):
     global lastCannonPos
-    pos = float(pos/60)
+    pos = float(pos / 60)
     pos = int(round(pos, 0))
     if pos > 29:
         pos = 29
     if pos == lastCannonPos:
         return
     lastCannonPos = pos
-    #print(pos)
+    # print(pos)
     url = "http://localhost/playerPos?pos=" + str(pos)
-    #print(url)
+    # print(url)
     player = requests.post(url)
-
 
 
 def getStates():
@@ -42,9 +41,9 @@ def getStates():
     shootyTemp = requests.get("http://localhost/shootyState")
     grid = json.loads(gridTemp.text)
     shooty = json.loads(shootyTemp.text)
-    #printGrid(grid)
-    #printGrid(shooty)
-    drawing(grid,shooty)
+    # printGrid(grid)
+    # printGrid(shooty)
+    drawing(grid, shooty)
 
 
 def getInfo():
@@ -60,13 +59,14 @@ def printGrid(board):
     print("----------SPLIT-----------")
 
 
-def drawing(grid,shooty):
+def drawing(grid, shooty):
     global lives, score
     screen.fill((0, 0, 0))
     drawGrid(grid)
     drawShooty(shooty)
-    writeScreen(lives,score)
+    writeScreen(lives, score)
     display.flip()
+
 
 def drawGrid(grid):
     for y in range(15):
@@ -116,18 +116,26 @@ def drawShooty(grid):
                 draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
 
 
-
-def writeScreen(lives,score):
-    fontObj = font.SysFont("Comic Sans MS",50)
-    img = fontObj.render("Score = " + str(score),True,(0,0,255))
-    screen.blit(img,(0,0))
-    img = fontObj.render("Lives", True, (0,0,255))
-    screen.blit(img, (1400,0))
+def writeScreen(lives, score):
+    fontObj = font.SysFont("Comic Sans MS", 50)
+    img = fontObj.render("Score = " + str(score), True, (0, 0, 255))
+    screen.blit(img, (0, 0))
+    img = fontObj.render("Lives", True, (0, 0, 255))
+    screen.blit(img, (1400, 0))
     x = 0
     for i in range(lives):
         img = image.load("cannonDraw.png").convert()
-        screen.blit(img,(1560 + (i * 60 + x), 0))
+        screen.blit(img, (1560 + (i * 60 + x), 0))
         x += 20
+
+
+def endScreen():
+    screen.fill((255, 255, 255))
+    fontObj = font.SysFont("Comic Sans MS", 120)
+    img = fontObj.render("Your final score was " + str(score), True, (0, 0, 0))
+    screen.blit(img, (0, 480))
+    display.flip()
+    t.sleep(3)
 
 
 if __name__ == '__main__':
@@ -143,7 +151,7 @@ if __name__ == '__main__':
     screen = display.set_mode((width, height))
     endProgram = False
     while not endProgram:
-        #t.sleep(0.25)
+        # t.sleep(0.25)
         for e in event.get():
             if e.type == QUIT:
                 endProgram = True
@@ -154,7 +162,8 @@ if __name__ == '__main__':
         sendPlayer(mouseX)
         getStates()
         getInfo()
-        print(lives,score)
+        print(lives, score)
         if lives == 0:
             endProgram = True
-            t.sleep(5)
+
+    endScreen()
