@@ -24,7 +24,7 @@ func main() {
 		for round := 0; lives > 0; round++ {
 			if round%10 == 0 {
 				shiftCheck()
-				time.Sleep(1 * time.Second)
+				//time.Sleep(1 * time.Second)
 			}
 			if possibleInvaderBullet() {
 				invaderBullet()
@@ -211,7 +211,7 @@ func bulletDown() {
 				} else if grid[i+1][x] == "0" {
 					lives -= 1
 					fmt.Println(lives)
-					time.Sleep(3 * time.Second)
+					//time.Sleep(3 * time.Second)
 				} else {
 					shootyGrid[i+1][x] = shootyGrid[i][x]
 				}

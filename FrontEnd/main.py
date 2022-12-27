@@ -102,6 +102,15 @@ def drawShooty(grid):
                 draw.rect(screen, (255,165,0),(x*60,y*60+50,60,60))
             if grid[y][x] == "1":
                 draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+            if grid[y][x] == "p1":
+                draw.rect(screen, (255,255,255),(x*60,y*60+50,60,60))
+            if grid[y][x] == "p2":
+                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+            if grid[y][x] == "p3":
+                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+            if grid[y][x] == "y":
+                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+
 
 
 def writeScreen(lives,score):
@@ -121,7 +130,7 @@ if __name__ == '__main__':
     screen = display.set_mode((width,height))
     endProgram = False
     while not endProgram:
-        t.sleep(0.25)
+        #t.sleep(0.25)
         for e in event.get():
             if e.type == QUIT:
                 endProgram = True
