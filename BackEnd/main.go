@@ -22,7 +22,7 @@ func main() {
 	newLevel()
 	for {
 		for round := 0; lives > 0; round++ {
-			if round%10 == 0 {
+			if round%20 == 0 {
 				shiftCheck()
 				//time.Sleep(1 * time.Second)
 			}
@@ -36,7 +36,7 @@ func main() {
 			printGrid(shootyGrid)
 			fmt.Println("------------SPLIT---------------")
 			winCheck()
-			time.Sleep(25 * time.Millisecond)
+			time.Sleep(50 * time.Millisecond)
 		}
 	}
 }
