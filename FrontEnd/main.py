@@ -51,7 +51,7 @@ def getInfo():
     global lives, score
     r = requests.get("http://localhost/info")
     info = json.loads(r.text)
-    lives, score = info[0], info[1]
+    lives, score = int(info[0]), int(info[1])
 
 
 def printGrid(board):
@@ -141,3 +141,7 @@ if __name__ == '__main__':
         sendPlayer(mouseX)
         getStates()
         getInfo()
+        print(lives,score)
+        if lives == 0:
+            endProgram = True
+            t.sleep(5)
