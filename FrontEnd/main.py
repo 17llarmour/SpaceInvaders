@@ -30,9 +30,9 @@ def sendPlayer(pos):
     if pos == lastCannonPos:
         return
     lastCannonPos = pos
-    print(pos)
+    #print(pos)
     url = "http://localhost/playerPos?pos=" + str(pos)
-    print(url)
+    #print(url)
     player = requests.post(url)
 
 
@@ -42,8 +42,8 @@ def getStates():
     shootyTemp = requests.get("http://localhost/shootyState")
     grid = json.loads(gridTemp.text)
     shooty = json.loads(shootyTemp.text)
-    printGrid(grid)
-    printGrid(shooty)
+    #printGrid(grid)
+    #printGrid(shooty)
     drawing(grid,shooty)
 
 
@@ -64,7 +64,7 @@ def drawing(grid,shooty):
     global lives, score
     screen.fill((0,0,0))
     drawGrid(grid)
-    drawGrid(shooty)
+    drawShooty(shooty)
     #writeScreen(lives,score)
     display.flip()
 
@@ -89,6 +89,21 @@ def drawGrid(grid):
             if invaderImage != None:
                 screen.blit(invaderImage, (x*60, y*60 + 50))
 
+
+def drawShooty(grid):
+    for y in range(15):
+        for x in range(30):
+            shootyImage = None
+            if grid[y][x] == "4":
+                draw.rect(screen, (0,255,0),(x*60,y*60+50,60,60))
+            if grid[y][x] == "3":
+                draw.rect(screen, (255,255,0),(x*60,y*60+50,60,60))
+            if grid[y][x] == "2":
+                draw.rect(screen, (255,165,0),(x*60,y*60+50,60,60))
+            if grid[y][x] == "1":
+                draw.rect(screen, (255,0,0),(x*60,y*60+50,60,60))
+
+
 def writeScreen(lives,score):
     pass
 
@@ -106,6 +121,7 @@ if __name__ == '__main__':
     screen = display.set_mode((width,height))
     endProgram = False
     while not endProgram:
+        t.sleep(0.25)
         for e in event.get():
             if e.type == QUIT:
                 endProgram = True

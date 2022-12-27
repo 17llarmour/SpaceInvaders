@@ -21,8 +21,11 @@ func main() {
 	shootyGrid = buildGrid()
 	newLevel()
 	for {
-		for lives > 0 {
-			shiftCheck()
+		for round := 0; lives > 0; round++ {
+			if round%10 == 0 {
+				shiftCheck()
+				time.Sleep(1 * time.Second)
+			}
 			if possibleInvaderBullet() {
 				invaderBullet()
 			}
@@ -33,7 +36,7 @@ func main() {
 			printGrid(shootyGrid)
 			fmt.Println("------------SPLIT---------------")
 			winCheck()
-			time.Sleep(2 * time.Second)
+			time.Sleep(25 * time.Millisecond)
 		}
 	}
 }
@@ -244,11 +247,11 @@ func bulletUp() {
 }
 
 func pointsUpdate(y int, x int) {
-	if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
-		score += 30
-	} else if grid[y-1][x] == "3" || grid[y-1][x] == "4" {
+	if grid[y-1][x] == "5" {
+		score += 40
+	} else if grid[y-1][x] == "4" || grid[y-1][x] == "3" {
 		score += 20
-	} else if grid[y-1][x] == "5" {
+	} else if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
 		score += 10
 	} else if grid[y-1][x] == "6" {
 		multi := rand.Intn(3) + 1
