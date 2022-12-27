@@ -7,7 +7,6 @@ from pygame import *
 
 # https://www.sitepoint.com/python-multiprocessing-parallel-programming/#:~:text=One%20way%20to%20achieve%20parallelism,multiprocessing%20accomplishes%20process%2Dbased%20parallelism.
 # Potentially use that to always update cannon position, have it run in parallel with the rest of the code
-lastCannonPos = int
 
 
 def newGame():
@@ -20,7 +19,7 @@ def newGame():
 def shootyShoot():
     url = "http://localhost/shoot?place=yes"
     shoot = requests.post(url)
-    
+
 
 def sendPlayer(pos):
     global lastCannonPos
@@ -45,6 +44,14 @@ def getStates():
     shooty = json.loads(shootyTemp.text)
     printGrid(grid)
     printGrid(shooty)
+    drawing(grid,shooty)
+
+
+def getInfo():
+    global lives, score
+    r = requests.get("http://localhost/info")
+    info = json.loads(r.text)
+    lives, score = info[0], info[1]
 
 
 def printGrid(board):
@@ -53,15 +60,51 @@ def printGrid(board):
     print("----------SPLIT-----------")
 
 
+def drawing(grid,shooty):
+    global lives, score
+    screen.fill((0,0,0))
+    drawGrid(grid)
+    drawGrid(shooty)
+    #writeScreen(lives,score)
+    display.flip()
+
+def drawGrid(grid):
+    for y in range(15):
+        for x in range(30):
+            invaderImage = None
+            if x % 2 == 1:
+                if grid[y][x] == "5" or grid[y][x] == "4":
+                    invaderImage = image.load("invader3Odd.png").convert()
+                elif grid[y][x] == "3" or grid[y][x] == "2":
+                    invaderImage = image.load("invader2Odd.png").convert()
+                elif grid[y][x] == "1":
+                    invaderImage = image.load("invader1Odd.png").convert()
+            else:
+                if grid[y][x] == "5" or grid[y][x] == "4":
+                    invaderImage = image.load("invader3Even.png").convert()
+                elif grid[y][x] == "3" or grid[y][x] == "2":
+                    invaderImage = image.load("invader2Even.png").convert()
+                elif grid[y][x] == "1":
+                    invaderImage = image.load("invader1Even.png").convert()
+            if invaderImage != None:
+                screen.blit(invaderImage, (x*60, y*60 + 50))
+
+def writeScreen(lives,score):
+    pass
+
+
 if __name__ == '__main__':
+    lastCannonPos = int
+    lives = 3
+    score = 0
     print("running client")
     newGame()
+    sendPlayer(0)
     init()
     width = 1800
-    height = 900
+    height = 950
     screen = display.set_mode((width,height))
     endProgram = False
-    newGame()
     while not endProgram:
         for e in event.get():
             if e.type == QUIT:
@@ -71,4 +114,5 @@ if __name__ == '__main__':
 
         mouseX, mouseY = mouse.get_pos()
         sendPlayer(mouseX)
-        #getStates()
+        getStates()
+        getInfo()
