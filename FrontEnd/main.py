@@ -62,10 +62,10 @@ def printGrid(board):
 
 def drawing(grid,shooty):
     global lives, score
-    screen.fill((0,0,0))
+    screen.fill((0, 0, 0))
     drawGrid(grid)
     drawShooty(shooty)
-    #writeScreen(lives,score)
+    writeScreen(lives,score)
     display.flip()
 
 def drawGrid(grid):
@@ -91,7 +91,7 @@ def drawGrid(grid):
                 elif grid[y][x] == "0":
                     invaderImage = image.load("cannonDraw.png").convert()
             if invaderImage != None:
-                screen.blit(invaderImage, (x*60, y*60 + 60))
+                screen.blit(invaderImage, (x * 60, y * 60 + 60))
 
 
 def drawShooty(grid):
@@ -99,26 +99,35 @@ def drawShooty(grid):
         for x in range(30):
             shootyImage = None
             if grid[y][x] == "4":
-                draw.rect(screen, (0,255,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (0, 255, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "3":
-                draw.rect(screen, (255,255,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 255, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "2":
-                draw.rect(screen, (255,165,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 165, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "1":
-                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "p1":
-                draw.rect(screen, (255,255,255),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 255, 255), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "p2":
-                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "p3":
-                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "y":
-                draw.rect(screen, (255,0,0),(x*60,y*60+60,60,60))
+                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
 
 
 
 def writeScreen(lives,score):
-    pass
+    fontObj = font.SysFont("Comic Sans MS",50)
+    img = fontObj.render("Score = " + str(score),True,(0,0,255))
+    screen.blit(img,(0,0))
+    img = fontObj.render("Lives", True, (0,0,255))
+    screen.blit(img, (1400,0))
+    x = 0
+    for i in range(lives):
+        img = image.load("cannonDraw.png").convert()
+        screen.blit(img,(1560 + (i * 60 + x), 0))
+        x += 20
 
 
 if __name__ == '__main__':
@@ -131,7 +140,7 @@ if __name__ == '__main__':
     init()
     width = 1800
     height = 960
-    screen = display.set_mode((width,height))
+    screen = display.set_mode((width, height))
     endProgram = False
     while not endProgram:
         #t.sleep(0.25)
