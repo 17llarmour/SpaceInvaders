@@ -18,8 +18,9 @@ def newGame():
 
 
 def shootyShoot():
-    shoot = requests.post(url="http://localhost/state?place=yes")
-
+    url = "http://localhost/shoot?place=yes"
+    shoot = requests.post(url)
+    
 
 def sendPlayer(pos):
     global lastCannonPos
@@ -65,6 +66,8 @@ if __name__ == '__main__':
         for e in event.get():
             if e.type == QUIT:
                 endProgram = True
+            if e.type == MOUSEBUTTONDOWN:
+                shootyShoot()
 
         mouseX, mouseY = mouse.get_pos()
         sendPlayer(mouseX)

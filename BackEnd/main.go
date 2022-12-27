@@ -251,9 +251,9 @@ func bulletDown() {
 }
 
 func bulletUp() {
-	for i := 1; i < 14; i++ {
+	for i := 1; i < 15; i++ {
 		for x := 0; x < 30; x++ {
-			if shootyGrid[i][x] == "y" && shootyGrid[i-1][x] != " " {
+			if shootyGrid[i][x] == "y" {
 				if shootyGrid[i-1][x] == "4" {
 					shootyGrid[i-1][x] = "3"
 				} else if shootyGrid[i-1][x] == "3" {
@@ -373,10 +373,7 @@ func updatePos(w http.ResponseWriter, r *http.Request) { // For pygame, use mous
 func playerShot(w http.ResponseWriter, r *http.Request) {
 	beenShot := r.URL.Query()["shoot"]
 	fmt.Println(beenShot)
-	shot := beenShot[0]
-	if shot == "yes" {
-		playerBullet()
-	}
+	playerBullet()
 }
 
 func getInfo(w http.ResponseWriter, r *http.Request) {
