@@ -22,13 +22,13 @@ func main() {
 	newLevel()
 	for {
 		for lives > 0 { // This is too slow with the sleep...
-			var row int
-			var col int
 			shiftCheck()
 			if possibleInvaderBullet() {
-				row, col = invaderBullet()
+				invaderBullet()
 			}
-			invaderBulletMovement(row, col)
+			//invaderBulletMovement(row, col)
+			bulletDown()
+			bulletUp()
 			printGrid(grid)
 			fmt.Println("------------SPLIT---------------")
 			printGrid(shootyGrid)
@@ -141,9 +141,11 @@ func shiftCheckDown() {
 		if grid[i][0] != " " {
 			shiftDown()
 			direction = "right"
+			return
 		} else if grid[i][29] != " " {
 			shiftDown()
 			direction = "left"
+			return
 		}
 	}
 }
@@ -165,40 +167,39 @@ func placeUser(box int) {
 }
 
 func playerBullet() { // Change how this is done to have a separate grid for bullets
-	var pos int
 	for i := 0; i < 29; i++ {
 		if grid[14][i] == "0" {
-			pos = i
+			shootyGrid[13][i] = "y"
 			break
 		}
 	}
-	shootyGrid[13][pos] = "y"
-	for y := 13; y > 0; y-- {
-		if grid[y-1][pos] != " " {
-			shootyGrid[y][pos] = " "
-			pointsUpdate(y, pos)
-			grid[y-1][pos] = " "
-			break
-		}
-		if shootyGrid[y-1][pos] != " " {
-			if shootyGrid[y-1][pos] == "4" {
-				shootyGrid[y-1][pos] = "3"
-			} else if shootyGrid[y-1][pos] == "3" {
-				shootyGrid[y-1][pos] = "2"
-			} else if shootyGrid[y-1][pos] == "2" {
-				shootyGrid[y-1][pos] = "1"
-			} else if shootyGrid[y-1][pos] == "1" {
-				shootyGrid[y-1][pos] = " "
-			}
-			shootyGrid[y][pos] = " "
-			break
-		}
-		shootyGrid[y-1][pos] = shootyGrid[y][pos]
-		shootyGrid[y][pos] = " "
 
-		time.Sleep(2 * time.Second) // This needs to sync with the normal game clock potentially not entirely sure...
-	}
-	clearTop()
+	//for y := 13; y > 0; y-- {
+	//	if grid[y-1][pos] != " " {
+	//		shootyGrid[y][pos] = " "
+	//		pointsUpdate(y, pos)
+	//		grid[y-1][pos] = " "
+	//		break
+	//	}
+	//	if shootyGrid[y-1][pos] != " " {
+	//		if shootyGrid[y-1][pos] == "4" {
+	//			shootyGrid[y-1][pos] = "3"
+	//		} else if shootyGrid[y-1][pos] == "3" {
+	//			shootyGrid[y-1][pos] = "2"
+	//		} else if shootyGrid[y-1][pos] == "2" {
+	//			shootyGrid[y-1][pos] = "1"
+	//		} else if shootyGrid[y-1][pos] == "1" {
+	//			shootyGrid[y-1][pos] = " "
+	//		}
+	//		shootyGrid[y][pos] = " "
+	//		break
+	//	}
+	//	shootyGrid[y-1][pos] = shootyGrid[y][pos]
+	//	shootyGrid[y][pos] = " "
+	//
+	//	time.Sleep(2 * time.Second) // This needs to sync with the normal game clock potentially not entirely sure...
+	//}
+	//clearTop()
 }
 
 func possibleInvaderBullet() bool {
@@ -209,7 +210,7 @@ func possibleInvaderBullet() bool {
 	return false
 }
 
-func invaderBullet() (int, int) {
+func invaderBullet() {
 	shootRow := rand.Intn(9) + 1
 	shootCol := rand.Intn(29)
 	if grid[shootRow][shootCol] == "5" || grid[shootRow][shootCol] == "4" {
@@ -219,34 +220,83 @@ func invaderBullet() (int, int) {
 	} else if grid[shootRow][shootCol] == "1" {
 		shootyGrid[shootRow][shootCol] = "p3"
 	}
-	return shootRow, shootCol
 }
 
-func invaderBulletMovement(row, col int) {
-	for ; row < 14; row++ {
-		if shootyGrid[row+1][col] != " " {
-			if shootyGrid[row+1][col] == "4" {
-				shootyGrid[row+1][col] = "3"
-			} else if shootyGrid[row+1][col] == "3" {
-				shootyGrid[row+1][col] = "2"
-			} else if shootyGrid[row+1][col] == "2" {
-				shootyGrid[row+1][col] = "1"
-			} else if shootyGrid[row+1][col] == "1" {
-				shootyGrid[row+1][col] = " "
+func bulletDown() {
+	for i := 13; i > 0; i-- {
+		for x := 0; x < 30; x++ {
+			if shootyGrid[i][x] == "p1" || shootyGrid[i][x] == "p2" || shootyGrid[i][x] == "p3" {
+				if shootyGrid[i+1][x] == "4" {
+					shootyGrid[i+1][x] = "3"
+				} else if shootyGrid[i+1][x] == "3" {
+					shootyGrid[i+1][x] = "2"
+				} else if shootyGrid[i+1][x] == "2" {
+					shootyGrid[i+1][x] = "1"
+				} else if shootyGrid[i+1][x] == "1" {
+					shootyGrid[i+1][x] = " "
+				} else if grid[i+1][x] == "0" {
+					lives -= 1
+					fmt.Println(lives)
+					time.Sleep(3 * time.Second)
+				} else {
+					shootyGrid[i+1][x] = shootyGrid[i][x]
+				}
+				shootyGrid[i][x] = " "
 			}
-			if grid[row+1][col] == "0" {
-				lives -= 1
-				fmt.Println(lives)
-				time.Sleep(3 * time.Second)
-			}
-			shootyGrid[row][col] = " "
-			break
 		}
-		shootyGrid[row+1][col] = shootyGrid[row][col]
-		shootyGrid[row][col] = " "
-		//time.Sleep(1 * time.Second)
 	}
+	clearBottom()
 }
+
+func bulletUp() {
+	for i := 1; i < 14; i++ {
+		for x := 0; x < 30; x++ {
+			if shootyGrid[i][x] == "y" && shootyGrid[i-1][x] != " " {
+				if shootyGrid[i-1][x] == "4" {
+					shootyGrid[i-1][x] = "3"
+				} else if shootyGrid[i-1][x] == "3" {
+					shootyGrid[i-1][x] = "2"
+				} else if shootyGrid[i+1][x] == "2" {
+					shootyGrid[i-1][x] = "1"
+				} else if shootyGrid[i-1][x] == "1" {
+					shootyGrid[i-1][x] = " "
+				} else {
+					pointsUpdate(i, x)
+					shootyGrid[i-1][x] = shootyGrid[i][x]
+
+				}
+				shootyGrid[i][x] = " "
+			}
+		}
+	}
+	clearTop()
+}
+
+//func invaderBulletMovement(row, col int) {
+//	for ; row < 14; row++ {
+//		if shootyGrid[row+1][col] != " " {
+//			if shootyGrid[row+1][col] == "4" {
+//				shootyGrid[row+1][col] = "3"
+//			} else if shootyGrid[row+1][col] == "3" {
+//				shootyGrid[row+1][col] = "2"
+//			} else if shootyGrid[row+1][col] == "2" {
+//				shootyGrid[row+1][col] = "1"
+//			} else if shootyGrid[row+1][col] == "1" {
+//				shootyGrid[row+1][col] = " "
+//			}
+//			if grid[row+1][col] == "0" {
+//				lives -= 1
+//				fmt.Println(lives)
+//				time.Sleep(3 * time.Second)
+//			}
+//			shootyGrid[row][col] = " "
+//			break
+//		}
+//		shootyGrid[row+1][col] = shootyGrid[row][col]
+//		shootyGrid[row][col] = " "
+//		//time.Sleep(1 * time.Second)
+//	}
+//}
 
 func pointsUpdate(y int, x int) {
 	if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
@@ -264,6 +314,12 @@ func pointsUpdate(y int, x int) {
 func clearTop() {
 	for i := 0; i < 29; i++ { // Syntax, inequality sign was backwards -_-
 		shootyGrid[0][i] = " "
+	}
+}
+
+func clearBottom() {
+	for i := 0; i < 29; i++ { // Syntax, inequality sign was backwards -_-
+		shootyGrid[14][i] = " "
 	}
 }
 
