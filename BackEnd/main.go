@@ -78,7 +78,7 @@ func winCheck() {
 		if grid[10][x] != " " {
 			lives -= 1
 			fmt.Println("Life Lost")
-			placeUser(0)
+			//placeUser(0)
 			clearGrid()
 			newLevel()
 			clearBottom()
@@ -161,14 +161,14 @@ func shiftCheck() {
 }
 
 func placeUser(box int) {
-	for i := 0; i < 29; i++ {
+	for i := 0; i < 30; i++ {
 		grid[14][i] = " "
 	}
 	grid[14][box] = "0"
 }
 
 func playerBullet() { // Change how this is done to have a separate grid for bullets
-	for i := 0; i < 29; i++ {
+	for i := 0; i < 30; i++ {
 		if grid[14][i] == "0" {
 			shootyGrid[13][i] = "y"
 			break
@@ -268,13 +268,13 @@ func pointsUpdate(y int, x int) {
 }
 
 func clearTop() {
-	for i := 0; i < 29; i++ { // Syntax, inequality sign was backwards -_-
+	for i := 0; i < 30; i++ { // Syntax, inequality sign was backwards -_-
 		shootyGrid[0][i] = " "
 	}
 }
 
 func clearBottom() {
-	for i := 0; i < 29; i++ { // Syntax, inequality sign was backwards -_-
+	for i := 0; i < 30; i++ { // Syntax, inequality sign was backwards -_-
 		shootyGrid[14][i] = " "
 	}
 }
