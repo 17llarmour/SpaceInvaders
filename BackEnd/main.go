@@ -37,6 +37,7 @@ func main() {
 			possibleRedShip()
 			bulletDown()
 			bulletUp()
+			isGridEmpty()
 			printGrid(grid)
 			fmt.Println("------------SPLIT---------------")
 			printGrid(shootyGrid)
@@ -103,6 +104,17 @@ func clearGrid() {
 			shootyGrid[i][x] = " "
 		}
 	}
+}
+
+func isGridEmpty() {
+	for i := 10; i > -1; i-- {
+		for x := 29; x > -1; x-- {
+			if grid[i][x] != " " {
+				return
+			}
+		}
+	}
+	newLevel()
 }
 
 func addShelter() { // Come back to me
