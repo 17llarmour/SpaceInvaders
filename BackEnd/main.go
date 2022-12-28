@@ -14,6 +14,7 @@ var shootyGrid [][]string
 var direction string
 var lives = 3
 var score int
+var activeRedShip = false
 
 func main() {
 	go runServer()
@@ -32,9 +33,7 @@ func main() {
 			if possibleInvaderBullet() {
 				invaderBullet()
 			}
-			if possibleRedShip() {
-				redShip()
-			}
+			possibleRedShip()
 			bulletDown()
 			bulletUp()
 			printGrid(grid)
@@ -71,6 +70,7 @@ func printGrid(grid [][]string) {
 
 func newLevel() { // For the future if in even array space one sprite, odd the other
 	clearGrid()
+	activeRedShip = false // MAYBE THIS
 	for i := 1; i < 6; i++ {
 		for x := 4; x < 26; x += 2 {
 			grid[i][x] = strconv.Itoa(i) // string(i) makes fun symbols for some reason
@@ -95,7 +95,7 @@ func winCheck() {
 }
 
 func clearGrid() {
-	for i := 10; i > 0; i-- {
+	for i := 10; i > -1; i-- {
 		for x := 29; x > -1; x-- {
 			grid[i][x] = " "
 			shootyGrid[i][x] = " "
@@ -182,16 +182,12 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 	}
 }
 
-func possibleRedShip() bool {
-	chance := rand.Intn(50)
-	if chance == 1 {
-		return true
+func possibleRedShip() {
+	chance := rand.Intn(500)
+	if !activeRedShip && chance == 1 {
+		activeRedShip = true
+		grid[0][0] = "6"
 	}
-	return false
-}
-
-func redShip() {
-	grid[0][0] = "6"
 }
 
 func redShipMovement() {
@@ -203,6 +199,7 @@ func redShipMovement() {
 	}
 	if grid[0][29] == "6" {
 		grid[0][29] = " "
+		activeRedShip = false
 	}
 }
 
@@ -294,11 +291,15 @@ func pointsUpdate(y int, x int) {
 		score += 100 * multi
 		grid[y-1][x] = " "
 		shootyGrid[y][x] = " "
+		activeRedShip = false
 	}
 }
 
 func clearTop() {
 	for i := 0; i < 30; i++ { // Syntax, inequality sign was backwards -_-
+		if grid[0][i] != "6" {
+			grid[0][i] = " "
+		}
 		shootyGrid[0][i] = " "
 	}
 }
