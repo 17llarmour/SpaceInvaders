@@ -183,26 +183,26 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 }
 
 func possibleRedShip() bool {
-	chance := rand.Intn(1)
-	if chance == 0 {
+	chance := rand.Intn(50)
+	if chance == 1 {
 		return true
 	}
 	return false
 }
 
 func redShip() {
-	shootyGrid[0][0] = "6"
+	grid[0][0] = "6"
 }
 
 func redShipMovement() {
-	for i := 28; i > 0; i-- {
-		if shootyGrid[0][i] == "6" {
-			shootyGrid[0][i+1] = "6"
-			shootyGrid[0][i] = " "
+	for i := 28; i > -1; i-- {
+		if grid[0][i] == "6" {
+			grid[0][i+1] = "6"
+			grid[0][i] = " "
 		}
 	}
-	if shootyGrid[0][29] == "6" {
-		shootyGrid[0][29] = " "
+	if grid[0][29] == "6" {
+		grid[0][29] = " "
 	}
 }
 
