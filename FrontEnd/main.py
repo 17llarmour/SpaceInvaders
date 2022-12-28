@@ -72,7 +72,9 @@ def drawGrid(grid):
     for y in range(15):
         for x in range(30):
             invaderImage = None
-            if x % 2 == 1:
+            if grid[y][x] == "6":
+                invaderImage = image.load("redShip.png")
+            elif x % 2 == 1:
                 if grid[y][x] == "5" or grid[y][x] == "4":
                     invaderImage = image.load("invader3Odd.png").convert()
                 elif grid[y][x] == "3" or grid[y][x] == "2":

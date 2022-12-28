@@ -26,8 +26,14 @@ func main() {
 				shiftCheck()
 				//time.Sleep(1 * time.Second)
 			}
+			if round%10 == 0 {
+				redShipMovement()
+			}
 			if possibleInvaderBullet() {
 				invaderBullet()
+			}
+			if possibleRedShip() {
+				redShip()
 			}
 			bulletDown()
 			bulletUp()
@@ -173,6 +179,30 @@ func playerBullet() { // Change how this is done to have a separate grid for bul
 			shootyGrid[13][i] = "y"
 			break
 		}
+	}
+}
+
+func possibleRedShip() bool {
+	chance := rand.Intn(1)
+	if chance == 0 {
+		return true
+	}
+	return false
+}
+
+func redShip() {
+	shootyGrid[0][0] = "6"
+}
+
+func redShipMovement() {
+	for i := 28; i > 0; i-- {
+		if shootyGrid[0][i] == "6" {
+			shootyGrid[0][i+1] = "6"
+			shootyGrid[0][i] = " "
+		}
+	}
+	if shootyGrid[0][29] == "6" {
+		shootyGrid[0][29] = " "
 	}
 }
 
