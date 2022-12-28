@@ -170,7 +170,7 @@ if __name__ == '__main__':
         sendPlayer(mouseX)
         getStates()
         getInfo()
-        print(lives, score)
+        #print(lives, score)
         if lives == 0:
             endProgram = True
 
