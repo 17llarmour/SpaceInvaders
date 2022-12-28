@@ -175,3 +175,4 @@ if __name__ == '__main__':
             endProgram = True
 
     endScreen()
+    print("Closing Client")
