@@ -15,6 +15,7 @@ var direction string
 var lives = 3
 var score int
 var activeRedShip = false
+var activePlayerBullet = false
 
 func main() {
 	go runServer()
@@ -70,7 +71,8 @@ func printGrid(grid [][]string) {
 
 func newLevel() { // For the future if in even array space one sprite, odd the other
 	clearGrid()
-	activeRedShip = false // MAYBE THIS
+	activeRedShip = false
+	activePlayerBullet = false
 	for i := 1; i < 6; i++ {
 		for x := 4; x < 26; x += 2 {
 			grid[i][x] = strconv.Itoa(i) // string(i) makes fun symbols for some reason
@@ -174,10 +176,13 @@ func placeUser(box int) {
 }
 
 func playerBullet() { // Change how this is done to have a separate grid for bullets
-	for i := 0; i < 30; i++ {
-		if grid[14][i] == "0" {
-			shootyGrid[13][i] = "y"
-			break
+	if !activePlayerBullet {
+		for i := 0; i < 30; i++ {
+			if grid[14][i] == "0" {
+				shootyGrid[13][i] = "y"
+				activePlayerBullet = true
+				break
+			}
 		}
 	}
 }
@@ -255,12 +260,16 @@ func bulletUp() {
 			if shootyGrid[i][x] == "y" {
 				if shootyGrid[i-1][x] == "4" {
 					shootyGrid[i-1][x] = "3"
+					activePlayerBullet = false
 				} else if shootyGrid[i-1][x] == "3" {
 					shootyGrid[i-1][x] = "2"
+					activePlayerBullet = false
 				} else if shootyGrid[i+1][x] == "2" {
 					shootyGrid[i-1][x] = "1"
+					activePlayerBullet = false
 				} else if shootyGrid[i-1][x] == "1" {
 					shootyGrid[i-1][x] = " "
+					activePlayerBullet = false
 				} else {
 					pointsUpdate(i, x)
 					shootyGrid[i-1][x] = shootyGrid[i][x]
@@ -278,25 +287,32 @@ func pointsUpdate(y int, x int) {
 		score += 40
 		grid[y-1][x] = " "
 		shootyGrid[y][x] = " "
+		activePlayerBullet = false
 	} else if grid[y-1][x] == "4" || grid[y-1][x] == "3" {
 		score += 20
 		grid[y-1][x] = " "
 		shootyGrid[y][x] = " "
+		activePlayerBullet = false
 	} else if grid[y-1][x] == "1" || grid[y-1][x] == "2" {
 		score += 10
 		grid[y-1][x] = " "
 		shootyGrid[y][x] = " "
+		activePlayerBullet = false
 	} else if grid[y-1][x] == "6" {
 		multi := rand.Intn(3) + 1
 		score += 100 * multi
 		grid[y-1][x] = " "
 		shootyGrid[y][x] = " "
 		activeRedShip = false
+		activePlayerBullet = false
 	}
 }
 
 func clearTop() {
 	for i := 0; i < 30; i++ { // Syntax, inequality sign was backwards -_-
+		if shootyGrid[0][i] == "y" {
+			activePlayerBullet = false
+		}
 		if grid[0][i] != "6" {
 			grid[0][i] = " "
 		}

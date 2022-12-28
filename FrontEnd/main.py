@@ -109,13 +109,19 @@ def drawShooty(grid):
             if grid[y][x] == "1":
                 draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "p1":
-                draw.rect(screen, (255, 255, 255), (x * 60, y * 60 + 60, 60, 60))
+                shootyImage = image.load("bullet1.png").convert()
+                #draw.rect(screen, (255, 255, 255), (x * 60, y * 60 + 60, 60, 60))
             if grid[y][x] == "p2":
-                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
+                #draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
+                shootyImage = image.load("bullet2.png").convert()
             if grid[y][x] == "p3":
-                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
+                #draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
+                shootyImage = image.load("bullet3.png").convert()
             if grid[y][x] == "y":
-                draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
+                #draw.rect(screen, (255, 0, 0), (x * 60, y * 60 + 60, 60, 60))
+                shootyImage = image.load("bullet4.png").convert()
+            if shootyImage != None:
+                screen.blit(shootyImage, (x * 60, y * 60 + 60))
 
 
 def writeScreen(lives, score):
